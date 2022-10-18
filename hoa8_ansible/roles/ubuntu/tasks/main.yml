@@ -1,0 +1,10 @@
+  - name: 
+
+  - name: install nagios
+    unarchive:
+      src: https://assets.nagios.com/downloads/nagioscore/releases/nagios-4.4.5.tar.gz
+      dest: /usr/local/bin
+      remote_src: yes
+      mode: 0755
+      owner: root
+      group: root
