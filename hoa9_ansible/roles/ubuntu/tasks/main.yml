@@ -1,0 +1,43 @@
+
+  - name: Creating a directory
+    shell: |
+      sudo mkdir var/lib/prometheus
+      for i in rules rules.d files_sd; do sudo mkdir -p /etc/prometheus/${i}; done
+
+  - name: Installing curl
+    apt:
+      name:
+        - curl
+      state: latest
+
+  - name: Installing Prometheus
+    unarchive:
+      src: https://github.com/prometheus/prometheus/releases/download/v2.39.1/prometheus-2.39.1.linux-amd64.tar.gz
+      dest: /usr/local/bin/
+      remote_src: yes
+      mode: 0755
+      owner: root
+      group: root
+ 
+  - name: Moving Prometheus to configuration template
+    tags: configuration
+    copy:
+      src: prom.yml
+      dest: /etc/prometheus/prom.yml
+      owner: root
+      group: root
+      mode: 0755
+  
+  - name: Moving the Prometheus systemd Service unit file
+    copy:
+      src: prom.service
+      dest: /etc/systemd/system/prom.service<<EOF
+      owner: root
+      group: root
+      mode: 0755
+
+  - name: Starting/Restarting Prometheus
+    service:
+      name: prometheus
+      state: restarted
+      enabled: true
